@@ -9,7 +9,9 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
+	debate2 "smartchoice/api/debate"
 	party2 "smartchoice/api/party"
+	"smartchoice/domain/debate"
 	"smartchoice/domain/party"
 	"smartchoice/infrastructure"
 )
@@ -21,10 +23,15 @@ func InitializedApp() *gin.Engine {
 	repositoryImpl := party.NewPartyRepository(db)
 	serviceImpl := party.NewPartyService(repositoryImpl)
 	handlerImpl := party2.NewPartyHandler(serviceImpl)
-	engine := infrastructure.SetupRoutes(handlerImpl)
+	debateRepositoryImpl := debate.NewDebateRepository(db)
+	debateServiceImpl := debate.NewDebateService(debateRepositoryImpl)
+	debateHandlerImpl := debate2.NewDebateHandler(debateServiceImpl)
+	engine := infrastructure.SetupRoutes(handlerImpl, debateHandlerImpl)
 	return engine
 }
 
 // injector.go:
 
 var partySet = wire.NewSet(party.NewPartyRepository, wire.Bind(new(party.Repository), new(*party.RepositoryImpl)), party.NewPartyService, wire.Bind(new(party.Service), new(*party.ServiceImpl)), party2.NewPartyHandler, wire.Bind(new(party2.Handler), new(*party2.HandlerImpl)))
+
+var debateSet = wire.NewSet(debate.NewDebateRepository, wire.Bind(new(debate.Repository), new(*debate.RepositoryImpl)), debate.NewDebateService, wire.Bind(new(debate.Service), new(*debate.ServiceImpl)), debate2.NewDebateHandler, wire.Bind(new(debate2.Handler), new(*debate2.HandlerImpl)))

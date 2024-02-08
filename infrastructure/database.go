@@ -5,6 +5,7 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"os"
+	"smartchoice/domain/debate"
 	"smartchoice/domain/party"
 )
 
@@ -15,10 +16,15 @@ func ConnectToDatabase() *gorm.DB {
 		panic(err)
 	}
 
-	err = db.AutoMigrate(&party.Party{})
+	err = db.AutoMigrate(
+		&party.Party{},
+		&debate.Debate{},
+	)
+
 	if err != nil {
 		panic(err)
 	}
+
 	fmt.Println("Database Connected")
 
 	return db
