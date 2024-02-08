@@ -5,6 +5,7 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"os"
+	"smartchoice/domain/party"
 )
 
 func ConnectToDatabase() *gorm.DB {
@@ -14,7 +15,7 @@ func ConnectToDatabase() *gorm.DB {
 		panic(err)
 	}
 
-	//err = db.AutoMigrate(&auth.User{}, &job.Job{}, &party.Course{})
+	err = db.AutoMigrate(&party.Party{})
 	if err != nil {
 		panic(err)
 	}

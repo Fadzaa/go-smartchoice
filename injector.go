@@ -6,49 +6,24 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
-	apiAuth "go-gin-api/api/auth"
-	apiJob "go-gin-api/api/job"
-	apiCourse "go-gin-api/api/party"
-	"go-gin-api/domain/auth"
-	"go-gin-api/domain/course"
-	"go-gin-api/domain/job"
-
-	"go-gin-api/infrastructure"
+	apiParty "smartchoice/api/party"
+	"smartchoice/domain/party"
+	"smartchoice/infrastructure"
 )
 
-var userSet = wire.NewSet(
-	auth.NewUserRepository,
-	wire.Bind(new(auth.Repository), new(*auth.RepositoryImpl)),
-	auth.NewAuthService,
-	wire.Bind(new(auth.Service), new(*auth.ServiceImpl)),
-	apiAuth.NewAuthHandler,
-	wire.Bind(new(apiAuth.Handler), new(*apiAuth.HandlerImpl)),
-)
-
-var jobSet = wire.NewSet(
-	job.NewJobRepository,
-	wire.Bind(new(job.Repository), new(*job.RepositoryImpl)),
-	job.NewJobService,
-	wire.Bind(new(job.Service), new(*job.ServiceImpl)),
-	apiJob.NewJobHandler,
-	wire.Bind(new(apiJob.Handler), new(*apiJob.HandlerImpl)),
-)
-
-var courseSet = wire.NewSet(
-	course.NewCourseRepository,
-	wire.Bind(new(course.Repository), new(*course.RepositoryImpl)),
-	course.NewCourseService,
-	wire.Bind(new(course.Service), new(*course.ServiceImpl)),
-	apiCourse.NewCourseHandler,
-	wire.Bind(new(apiCourse.Handler), new(*apiCourse.HandlerImpl)),
+var partySet = wire.NewSet(
+	party.NewPartyRepository,
+	wire.Bind(new(party.Repository), new(*party.RepositoryImpl)),
+	party.NewPartyService,
+	wire.Bind(new(party.Service), new(*party.ServiceImpl)),
+	apiParty.NewPartyHandler,
+	wire.Bind(new(apiParty.Handler), new(*apiParty.HandlerImpl)),
 )
 
 func InitializedApp() *gin.Engine {
 	wire.Build(
 		infrastructure.ConnectToDatabase,
-		userSet,
-		jobSet,
-		courseSet,
+		partySet,
 		infrastructure.SetupRoutes,
 	)
 	return nil

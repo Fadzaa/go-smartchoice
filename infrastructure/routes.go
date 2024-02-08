@@ -9,8 +9,7 @@ func SetupRoutes(partyHandler party.Handler) *gin.Engine {
 	router := gin.Default()
 
 	p := router.Group("/party")
-	p.GET("/", partyHandler.GetAllParty)
-	p.GET("/filter", partyHandler.SearchAllParty)
+	p.GET("/", partyHandler.SearchAllParty)
 
 	return router
 }
