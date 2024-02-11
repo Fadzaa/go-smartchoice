@@ -10,9 +10,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
 	candidate_pair2 "smartchoice/api/candidate_pair"
+	candidate_profile2 "smartchoice/api/candidate_profile"
 	debate2 "smartchoice/api/debate"
 	party2 "smartchoice/api/party"
 	"smartchoice/domain/candidate_pair"
+	"smartchoice/domain/candidate_profile"
 	"smartchoice/domain/debate"
 	"smartchoice/domain/party"
 	"smartchoice/infrastructure"
@@ -31,7 +33,10 @@ func InitializedApp() *gin.Engine {
 	candidate_pairRepositoryImpl := candidate_pair.NewCandidatePairRepository(db)
 	candidate_pairServiceImpl := candidate_pair.NewCandidatePairService(candidate_pairRepositoryImpl)
 	candidate_pairHandlerImpl := candidate_pair2.NewCandidatePairHandler(candidate_pairServiceImpl)
-	engine := infrastructure.SetupRoutes(handlerImpl, debateHandlerImpl, candidate_pairHandlerImpl)
+	candidate_profileRepositoryImpl := candidate_profile.NewCandidateProfileRepository(db)
+	candidate_profileServiceImpl := candidate_profile.NewCandidateProfileService(candidate_profileRepositoryImpl)
+	candidate_profileHandlerImpl := candidate_profile2.NewCandidateProfileHandler(candidate_profileServiceImpl)
+	engine := infrastructure.SetupRoutes(handlerImpl, debateHandlerImpl, candidate_pairHandlerImpl, candidate_profileHandlerImpl)
 	return engine
 }
 
@@ -42,3 +47,5 @@ var partySet = wire.NewSet(party.NewPartyRepository, wire.Bind(new(party.Reposit
 var debateSet = wire.NewSet(debate.NewDebateRepository, wire.Bind(new(debate.Repository), new(*debate.RepositoryImpl)), debate.NewDebateService, wire.Bind(new(debate.Service), new(*debate.ServiceImpl)), debate2.NewDebateHandler, wire.Bind(new(debate2.Handler), new(*debate2.HandlerImpl)))
 
 var candidatePairSet = wire.NewSet(candidate_pair.NewCandidatePairRepository, wire.Bind(new(candidate_pair.Repository), new(*candidate_pair.RepositoryImpl)), candidate_pair.NewCandidatePairService, wire.Bind(new(candidate_pair.Service), new(*candidate_pair.ServiceImpl)), candidate_pair2.NewCandidatePairHandler, wire.Bind(new(candidate_pair2.Handler), new(*candidate_pair2.HandlerImpl)))
+
+var candidateProfileSet = wire.NewSet(candidate_profile.NewCandidateProfileRepository, wire.Bind(new(candidate_profile.Repository), new(*candidate_profile.RepositoryImpl)), candidate_profile.NewCandidateProfileService, wire.Bind(new(candidate_profile.Service), new(*candidate_profile.ServiceImpl)), candidate_profile2.NewCandidateProfileHandler, wire.Bind(new(candidate_profile2.Handler), new(*candidate_profile2.HandlerImpl)))

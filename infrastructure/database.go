@@ -6,6 +6,7 @@ import (
 	"gorm.io/gorm"
 	"os"
 	"smartchoice/domain/candidate_pair"
+	"smartchoice/domain/candidate_profile"
 	"smartchoice/domain/debate"
 	"smartchoice/domain/party"
 )
@@ -19,7 +20,9 @@ func ConnectToDatabase() *gorm.DB {
 
 	err = db.AutoMigrate(
 		&candidate_pair.CandidatePair{},
+		&candidate_profile.CandidateProfile{},
 		&party.Party{},
+		&candidate_profile.Achievement{},
 		&debate.Debate{},
 	)
 

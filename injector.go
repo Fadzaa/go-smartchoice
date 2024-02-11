@@ -7,9 +7,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
 	apiCandidatePair "smartchoice/api/candidate_pair"
+	apiCandidateProfile "smartchoice/api/candidate_profile"
 	apiDebate "smartchoice/api/debate"
 	apiParty "smartchoice/api/party"
 	"smartchoice/domain/candidate_pair"
+	"smartchoice/domain/candidate_profile"
 	"smartchoice/domain/debate"
 	"smartchoice/domain/party"
 	"smartchoice/infrastructure"
@@ -42,12 +44,22 @@ var candidatePairSet = wire.NewSet(
 	wire.Bind(new(apiCandidatePair.Handler), new(*apiCandidatePair.HandlerImpl)),
 )
 
+var candidateProfileSet = wire.NewSet(
+	candidate_profile.NewCandidateProfileRepository,
+	wire.Bind(new(candidate_profile.Repository), new(*candidate_profile.RepositoryImpl)),
+	candidate_profile.NewCandidateProfileService,
+	wire.Bind(new(candidate_profile.Service), new(*candidate_profile.ServiceImpl)),
+	apiCandidateProfile.NewCandidateProfileHandler,
+	wire.Bind(new(apiCandidateProfile.Handler), new(*apiCandidateProfile.HandlerImpl)),
+)
+
 func InitializedApp() *gin.Engine {
 	wire.Build(
 		infrastructure.ConnectToDatabase,
 		partySet,
 		debateSet,
 		candidatePairSet,
+		candidateProfileSet,
 		infrastructure.SetupRoutes,
 	)
 	return nil
