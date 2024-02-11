@@ -1,12 +1,9 @@
 package party
 
-import (
-	"gorm.io/gorm"
-)
-
 type Party struct {
-	gorm.Model
-	Name        string `json:"name" gorm:"maxLength:100"`
-	Image       string `json:"image"`
-	Description string `json:"description"`
+	ID              uint   `json:"id" gorm:"primaryKey"`
+	Name            string `json:"name" gorm:"maxLength:100"`
+	Image           string `json:"image"`
+	Description     string `json:"description"`
+	CandidatePairID uint   `json:"candidate_pair_id"`
 }

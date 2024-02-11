@@ -9,8 +9,10 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
+	candidate_pair2 "smartchoice/api/candidate_pair"
 	debate2 "smartchoice/api/debate"
 	party2 "smartchoice/api/party"
+	"smartchoice/domain/candidate_pair"
 	"smartchoice/domain/debate"
 	"smartchoice/domain/party"
 	"smartchoice/infrastructure"
@@ -26,7 +28,10 @@ func InitializedApp() *gin.Engine {
 	debateRepositoryImpl := debate.NewDebateRepository(db)
 	debateServiceImpl := debate.NewDebateService(debateRepositoryImpl)
 	debateHandlerImpl := debate2.NewDebateHandler(debateServiceImpl)
-	engine := infrastructure.SetupRoutes(handlerImpl, debateHandlerImpl)
+	candidate_pairRepositoryImpl := candidate_pair.NewCandidatePairRepository(db)
+	candidate_pairServiceImpl := candidate_pair.NewCandidatePairService(candidate_pairRepositoryImpl)
+	candidate_pairHandlerImpl := candidate_pair2.NewCandidatePairHandler(candidate_pairServiceImpl)
+	engine := infrastructure.SetupRoutes(handlerImpl, debateHandlerImpl, candidate_pairHandlerImpl)
 	return engine
 }
 
@@ -35,3 +40,5 @@ func InitializedApp() *gin.Engine {
 var partySet = wire.NewSet(party.NewPartyRepository, wire.Bind(new(party.Repository), new(*party.RepositoryImpl)), party.NewPartyService, wire.Bind(new(party.Service), new(*party.ServiceImpl)), party2.NewPartyHandler, wire.Bind(new(party2.Handler), new(*party2.HandlerImpl)))
 
 var debateSet = wire.NewSet(debate.NewDebateRepository, wire.Bind(new(debate.Repository), new(*debate.RepositoryImpl)), debate.NewDebateService, wire.Bind(new(debate.Service), new(*debate.ServiceImpl)), debate2.NewDebateHandler, wire.Bind(new(debate2.Handler), new(*debate2.HandlerImpl)))
+
+var candidatePairSet = wire.NewSet(candidate_pair.NewCandidatePairRepository, wire.Bind(new(candidate_pair.Repository), new(*candidate_pair.RepositoryImpl)), candidate_pair.NewCandidatePairService, wire.Bind(new(candidate_pair.Service), new(*candidate_pair.ServiceImpl)), candidate_pair2.NewCandidatePairHandler, wire.Bind(new(candidate_pair2.Handler), new(*candidate_pair2.HandlerImpl)))
